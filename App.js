@@ -5,6 +5,8 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Switch,
+  TextInput,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -49,6 +51,26 @@ export default function App() {
 
   const togglePhrase = (index) => {
     setExpandedPhraseIndex(expandedPhraseIndex === index ? null : index);
+  };
+
+  // state to manage quiz answer and feedback
+  const [isEnglishToFilipino, setIsEnglishToFilipino] = useState(true);
+  const [quizAnswer, setQuizAnswer] = useState("");
+  const [quizFeedback, setQuizFeedback] = useState("");
+
+  // quiz answer validation
+  const checkAnswer = () => {
+    const correctAnswer = isEnglishToFilipino
+      ? phrases.find(
+          (p) => p.meaning.toLowerCase() === quizAnswer.toLowerCase()
+        )
+      : phrases.find((p) => p.word.toLowerCase() === quizAnswer.toLowerCase());
+
+    if (correctAnswer) {
+      setQuizFeedback("Correct!");
+    } else {
+      setQuizFeedback("Incorrect! Try again.");
+    }
   };
 
   return (
@@ -97,6 +119,38 @@ export default function App() {
           </View>
         ))}
       </View>
+
+      {/* Quiz Section */}
+      <View style={styles.quizSection}>
+        <Text style={styles.quizTitle}>Quiz Section</Text>
+        <View style={styles.switchRow}>
+          <Text>
+            {isEnglishToFilipino
+              ? "English to Filipino"
+              : "Filipino to English"}
+          </Text>
+          <Switch
+            value={isEnglishToFilipino}
+            onValueChange={(value) => setIsEnglishToFilipino(value)}
+          />
+        </View>
+        <TextInput
+          style={styles.input}
+          placeholder={
+            isEnglishToFilipino
+              ? "Type the Filipino word for the English phrase..."
+              : "Type the English word for the Filipino phrase..."
+          }
+          onChangeText={(text) => setQuizAnswer(text)}
+          value={quizAnswer}
+        />
+        <TouchableOpacity style={styles.button} onPress={checkAnswer}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+        {quizFeedback ? (
+          <Text style={styles.feedback}>{quizFeedback}</Text>
+        ) : null}
+      </View>
     </ScrollView>
   );
 }
@@ -141,5 +195,55 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#6200EE",
+  },
+  details: {
+    padding: 16,
+    backgroundColor: "#EDE7F6",
+  },
+  detailsText: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  label: {
+    fontWeight: "bold",
+  },
+  quizSection: {
+    padding: 16,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    elevation: 2,
+    marginTop: 16,
+  },
+  quizTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  switchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 8,
+  },
+  button: {
+    backgroundColor: "#6200EE",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  feedback: {
+    marginTop: 8,
+    fontSize: 16,
+    color: "#00796B",
   },
 });
