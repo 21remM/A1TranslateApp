@@ -46,28 +46,39 @@ export default function App() {
     },
   ];
 
-  // state to manage the expanded phrase index
-  const [expandedPhraseIndex, setExpandedPhraseIndex] = useState(null);
+  // quiz words array
+  const quizWords = [
+    { filipino: "Kumusta", english: "How are you" },
+    { filipino: "Lalake", english: "Male" },
+    { filipino: "Babae", english: "Female" },
+    { filipino: "Niebe", english: "Snow" },
+    { filipino: "Araw", english: "Day" },
+    { filipino: "Pasensya", english: "Sorry" },
+  ];
 
+  // states for phrase list and quiz
+  const [expandedPhraseIndex, setExpandedPhraseIndex] = useState(null);
+  const [isEnglishToFilipino, setIsEnglishToFilipino] = useState(true);
+  const [quizAnswer, setQuizAnswer] = useState("");
+  const [quizFeedback, setQuizFeedback] = useState("");
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+
+  // toggle phrase expansion
   const togglePhrase = (index) => {
     setExpandedPhraseIndex(expandedPhraseIndex === index ? null : index);
   };
 
-  // state to manage quiz answer and feedback
-  const [isEnglishToFilipino, setIsEnglishToFilipino] = useState(true);
-  const [quizAnswer, setQuizAnswer] = useState("");
-  const [quizFeedback, setQuizFeedback] = useState("");
-
   // quiz answer validation
   const checkAnswer = () => {
     const correctAnswer = isEnglishToFilipino
-      ? phrases.find(
-          (p) => p.meaning.toLowerCase() === quizAnswer.toLowerCase()
-        )
-      : phrases.find((p) => p.word.toLowerCase() === quizAnswer.toLowerCase());
+      ? quizWords[currentQuizIndex].filipino.toLowerCase()
+      : quizWords[currentQuizIndex].english.toLowerCase();
 
-    if (correctAnswer) {
+    if (quizAnswer.toLowerCase() === correctAnswer) {
       setQuizFeedback("Correct!");
+      const nextIndex = (currentQuizIndex + 1) % quizWords.length;
+      setCurrentQuizIndex(nextIndex);
+      setQuizAnswer("");
     } else {
       setQuizFeedback("Incorrect! Try again.");
     }
@@ -134,13 +145,14 @@ export default function App() {
             onValueChange={(value) => setIsEnglishToFilipino(value)}
           />
         </View>
+        <Text style={styles.quizPrompt}>
+          {isEnglishToFilipino
+            ? `What is "${quizWords[currentQuizIndex].english}" in Filipino?`
+            : `What is "${quizWords[currentQuizIndex].filipino}" in English?`}
+        </Text>
         <TextInput
           style={styles.input}
-          placeholder={
-            isEnglishToFilipino
-              ? "Type the Filipino word for the English phrase..."
-              : "Type the English word for the Filipino phrase..."
-          }
+          placeholder="Enter your answer here..."
           onChangeText={(text) => setQuizAnswer(text)}
           value={quizAnswer}
         />
@@ -156,6 +168,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
   header: {
     padding: 16,
     backgroundColor: "#fff",
@@ -223,6 +239,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
+  },
+  quizPrompt: {
+    fontSize: 16,
+    marginBottom: 8,
   },
   input: {
     borderWidth: 1,
