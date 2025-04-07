@@ -49,9 +49,9 @@ export default function App() {
   // quiz words array
   const quizWords = [
     { filipino: "Kumusta", english: "How are you" },
-    { filipino: "Lalake", english: "Male" },
+    { filipino: "Lalaki", english: "Male" },
     { filipino: "Babae", english: "Female" },
-    { filipino: "Niebe", english: "Snow" },
+    { filipino: "Niyebe", english: "Snow" },
     { filipino: "Araw", english: "Day" },
     { filipino: "Pasensya", english: "Sorry" },
   ];
