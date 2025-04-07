@@ -9,6 +9,7 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default function App() {
   // array for phrases
@@ -103,13 +104,17 @@ export default function App() {
         {phrases.map((phrase, index) => (
           <View key={index} style={styles.phraseContainer}>
             <TouchableOpacity
-              onPress={() => togglePhrase(index)}
               style={styles.phraseRow}
+              onPress={() => togglePhrase(index)}
             >
               <Text style={styles.phraseText}>{phrase.phrase}</Text>
-              <Text style={styles.dropDownButton}>
-                {expandedPhraseIndex === index ? "-" : "+"}
-              </Text>
+              <Icon
+                name={
+                  expandedPhraseIndex === index ? "chevron-up" : "chevron-down"
+                }
+                size={24}
+                color="#6200EE"
+              />
             </TouchableOpacity>
             {expandedPhraseIndex === index && (
               <View style={styles.details}>
